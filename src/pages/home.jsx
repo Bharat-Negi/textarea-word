@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const home = () => {
 	return (
-		<ul className="p-0 d-flex justify-content-center gap-5">
+		<ul className="p-0 d-flex justify-content-center gap-5 flex-md-wrap">
 			<Link to="/text-field">Text Area</Link>
 			<Link to="/use-state">useState</Link>
 			<Link to="/use-effect">useEffect</Link>

@@ -1,0 +1,23 @@
+[
+	{ "name": "Amit Sharma", "class": "10", "subject": "Mathematics" },
+	{ "name": "Priya Verma", "class": "9", "subject": "Science" },
+	{ "name": "Rahul Singh", "class": "8", "subject": "English" },
+	{ "name": "Neha Gupta", "class": "10", "subject": "Physics" },
+	{ "name": "Arjun Mehta", "class": "11", "subject": "Chemistry" },
+	{ "name": "Kavya Jain", "class": "12", "subject": "Biology" },
+	{ "name": "Rohit Kumar", "class": "9", "subject": "History" },
+	{ "name": "Anjali Roy", "class": "8", "subject": "Geography" },
+	{ "name": "Suresh Patel", "class": "10", "subject": "Computer Science" },
+	{ "name": "Pooja Mishra", "class": "11", "subject": "Economics" },
+
+	{ "name": "Vikas Yadav", "class": "12", "subject": "Political Science" },
+	{ "name": "Sneha Nair", "class": "9", "subject": "Mathematics" },
+	{ "name": "Manish Agarwal", "class": "8", "subject": "Science" },
+	{ "name": "Ritu Saxena", "class": "10", "subject": "Hindi" },
+	{ "name": "Deepak Choudhary", "class": "11", "subject": "Accountancy" },
+	{ "name": "Nidhi Kapoor", "class": "12", "subject": "Business Studies" },
+	{ "name": "Alok Tiwari", "class": "9", "subject": "English" },
+	{ "name": "Meera Iyer", "class": "8", "subject": "Tamil" },
+	{ "name": "Karan Malhotra", "class": "10", "subject": "Physical Education" },
+	{ "name": "Ayesha Khan", "class": "11", "subject": "Sociology" }
+]
