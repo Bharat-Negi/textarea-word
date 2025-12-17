@@ -1,31 +1,34 @@
 import React from "react";
-import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/home";
+import TextField from "./component/TextField";
+import UseStateHook from "./component/Hooks/UseStateHook";
+import UseEffectHook from "./component/Hooks/UseEffectHook";
+import UseContextHook from "./component/Hooks/UseContextHook";
+import UseRefHook from "./component/Hooks/UseRefHook";
+import UseReducerHook from "./component/Hooks/UseReducerHook";
+import UseMemoHook from "./component/Hooks/UseMemoHook";
+import UseCallbackHook from "./component/Hooks/UseCallbackHook";
+import UseLayoutEffectHook from "./component/Hooks/UseLayoutEffectHook";
+import CustomHooks from "./component/Hooks/CustomHooks";
 
 function App() {
-	const [inputword, setInputWord] = useState("");
-
-	const handleChange = (e) => {
-		setInputWord(e.target.value);
-	};
-
-	let wordcount = inputword.trim().split(" ").filter(Boolean).length;
-	let wordText = inputword.trim().length;
-
 	return (
 		<>
 			<div className="container mt-5">
-				<h1 className="text-center">Find Word</h1>
-				<textarea
-					className="w-100"
-					name="word_counter"
-					id=""
-					onChange={handleChange}
-					rows="4"
-					cols="50"
-					placeholder="Enter your message here..."
-				></textarea>
-				<h3>Word: {wordcount}</h3>
-				<h3>Text: {wordText}</h3>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/text-field" element={<TextField />} />
+					<Route path="/use-state" element={<UseStateHook />} />
+					<Route path="/use-effect" element={<UseEffectHook />} />
+					<Route path="/use-context" element={<UseContextHook />} />
+					<Route path="/use-ref" element={<UseRefHook />} />
+					<Route path="/use-reducer" element={<UseReducerHook />} />
+					<Route path="/use-layouteffect" element={<UseLayoutEffectHook />} />
+					<Route path="/use-memo" element={<UseMemoHook />} />
+					<Route path="/use-callback" element={<UseCallbackHook />} />
+					<Route path="/custom-hooks" element={<CustomHooks />} />
+				</Routes>
 			</div>
 		</>
 	);
