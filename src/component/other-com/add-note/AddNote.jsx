@@ -17,12 +17,13 @@ const AddNote = () => {
 		setData((prev) => [
 			...prev,
 			{
-				id: crypto.randomUUID(),
+				id: crypto.randomUUID(8, 9),
 				name,
 				imagep,
 				email,
 				phone,
 				textdata,
+				time: new Date().toLocaleString(),
 			},
 		]);
 
@@ -134,6 +135,7 @@ const AddNote = () => {
 							name={nee.name}
 							email={nee.email}
 							phone={nee.phone}
+							timeSet={nee.time}
 							textWrap={nee.textdata}
 							deleteCard={deleteHandle}
 						/>

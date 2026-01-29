@@ -6,18 +6,24 @@ const CardInfo = ({
 	phone,
 	deleteCard,
 	id,
+	timeSet,
 }) => {
 	return (
 		<div className="bg-neutral-primary-soft block max-w-sm p-3 border border-default rounded-2xl shadow-xs mb-10">
-			<a href="#">
-				<img className="rounded-2xl" src={imagePath} alt="" />
-			</a>
-			<h5 className="text-2xl font-semibold tracking-tight text-heading mt-3 mb-2">
-				{name}
-			</h5>
+			{imagePath && (
+				<a href="#">
+					<img className="rounded-2xl" src={imagePath} alt="" />
+				</a>
+			)}
+			{name && (
+				<h5 className="text-2xl font-semibold tracking-tight text-heading mt-3 mb-2">
+					{name}
+				</h5>
+			)}
 			<div className="grid grid-cols-1 mb-2 text-sm font-semibold text-gray-500">
 				<div>Email: {email}</div>
 				<div>Phone No.: {phone}</div>
+				<div>Date: {timeSet}</div>
 			</div>
 			<p className="mb-6 text-body">{textWrap}</p>
 			<a
