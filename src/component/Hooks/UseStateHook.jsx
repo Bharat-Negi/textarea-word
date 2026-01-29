@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const UseStateHook = () => {
@@ -7,7 +7,11 @@ const UseStateHook = () => {
 	const [name, setName] = useState("");
 
 	function increaseCounter() {
-		setCounter(counter + 1);
+		setCounter((prev) => prev + 1);
+		setCounter((prev) => prev + 1);
+	}
+	function decreaseCounter() {
+		setCounter(counter - 1);
 	}
 
 	// object as state variable
@@ -20,6 +24,13 @@ const UseStateHook = () => {
 		setDetails((prev) => ({
 			...prev,
 			objcounter: prev.objcounter + 1,
+		}));
+	};
+
+	const decreaseCounterObj = () => {
+		setDetails((prev) => ({
+			...prev,
+			objcounter: prev.objcounter - 1,
 		}));
 	};
 
@@ -37,22 +48,52 @@ const UseStateHook = () => {
 			</div>
 			{/* Primitive state example */}
 			<div>
-				<input type="text" onChange={(e) => setName(e.target.value)} />
+				<input
+					value={name}
+					type="text"
+					onChange={(e) => setName(e.target.value)}
+				/>
 				<h1>
 					{name} has clicked {counter} times!!
 				</h1>
-				<button onClick={increaseCounter}>Increase</button>
+				<button
+					className="bg-red-500 py-1 px-2 rounded text-white"
+					onClick={increaseCounter}
+				>
+					Increase
+				</button>
+				<button
+					className="bg-green-500 py-1 px-2 rounded text-white"
+					onClick={decreaseCounter}
+				>
+					Decrease
+				</button>
 			</div>
 
 			<hr />
 
 			{/* Object state example */}
 			<div>
-				<input type="text" onChange={handleObjNameChange} />
+				<input
+					value={details.name}
+					type="text"
+					onChange={handleObjNameChange}
+				/>
 				<h1>
 					{details.name} has clicked {details.objcounter} times!!
 				</h1>
-				<button onClick={increaseCounterObj}>Increase</button>
+				<button
+					className="bg-green-500 py-1 px-2 rounded text-white"
+					onClick={increaseCounterObj}
+				>
+					Increase
+				</button>
+				<button
+					className="bg-red-500 py-1 px-2 rounded text-white"
+					onClick={decreaseCounterObj}
+				>
+					Increase
+				</button>
 			</div>
 		</>
 	);
