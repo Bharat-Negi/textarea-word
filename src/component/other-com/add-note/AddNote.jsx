@@ -17,7 +17,7 @@ const AddNote = () => {
 		setData((prev) => [
 			...prev,
 			{
-				id: crypto.randomUUID(8, 9),
+				id: crypto.randomUUID(),
 				name,
 				imagep,
 				email,
@@ -40,6 +40,7 @@ const AddNote = () => {
 
 	function deleteHandle(id) {
 		setData((prev) => prev.filter((item) => item.id !== id));
+		// console.log(id);
 	}
 
 	return (
@@ -126,10 +127,10 @@ const AddNote = () => {
 			</div>
 
 			<div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-				{data?.map((nee) => {
+				{data?.map((nee, idx) => {
 					return (
 						<CardInfo
-							key={nee.id}
+							key={idx}
 							id={nee.id}
 							imagePath={nee.imagep}
 							name={nee.name}
