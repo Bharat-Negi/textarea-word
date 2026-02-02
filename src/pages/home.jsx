@@ -8,6 +8,7 @@ const home = () => {
 			<Link to="/custom-hooks">Custom Hooks</Link>
 			<Link to="/add-note">Add Notes</Link>
 			<Link to="/redux-page">Redux</Link>
+			<Link to="/dynamic-page">Dynamic Page</Link>
 		</ul>
 	);
 };

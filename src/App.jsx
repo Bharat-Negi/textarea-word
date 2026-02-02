@@ -6,6 +6,8 @@ import ReduxCom from "./component/other-com/redux-file/ReduxCom";
 import TextField from "./component/TextField";
 import Home from "./pages/home";
 import PageNotFound from "./pages/page-notfound";
+import DynamicPage from "./component/other-com/dynamicRoute/DynamicPage";
+import ClientPage from "./component/other-com/dynamicRoute/ClientPage";
 
 function App() {
 	return (
@@ -18,6 +20,8 @@ function App() {
 					<Route path="/custom-hooks" element={<CustomHooks />} />
 					<Route path="/add-note" element={<AddNote />} />
 					<Route path="/redux-page" element={<ReduxCom />} />
+					<Route path="/dynamic-page" element={<DynamicPage />} />
+					<Route path="/dynamic-page/:id" element={<ClientPage />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>
