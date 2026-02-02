@@ -3,17 +3,25 @@ import { Link } from "react-router-dom";
 import CardInfo from "./CardInfo";
 
 const AddNote = () => {
+	// form states
 	const [name, setName] = useState("");
 	const [imagep, setImagep] = useState("");
 	const [email, setEmail] = useState("");
 	const [phone, setPhone] = useState("");
 	const [textdata, setTextdata] = useState("");
 
+	// notes state (load from localStorage safely)
 	const [data, setData] = useState(() => {
-		const savedData = localStorage.getItem("note");
-		return savedData ? JSON.parse(savedData) : [];
+		try {
+			const savedData = localStorage.getItem("note");
+			return savedData ? JSON.parse(savedData) : [];
+		} catch (error) {
+			console.error("Invalid localStorage data", error);
+			return [];
+		}
 	});
 
+	// reset form
 	const resetForm = () => {
 		setName("");
 		setImagep("");
@@ -22,30 +30,32 @@ const AddNote = () => {
 		setTextdata("");
 	};
 
+	// submit handler
 	function formHandel(e) {
 		e.preventDefault();
 
-		setData((prev) => [
-			...prev,
-			{
-				id: crypto.randomUUID(),
-				name,
-				imagep,
-				email,
-				phone,
-				textdata,
-				time: new Date().toLocaleString(),
-			},
-		]);
+		const newNote = {
+			id: crypto.randomUUID(),
+			name: name.trim(),
+			imagep: imagep.trim(),
+			email: email.trim(),
+			phone: phone.trim(),
+			textdata: textdata.trim(),
+			time: new Date().toLocaleString(),
+		};
+
+		setData((prev) => [...prev, newNote]);
 
 		resetForm();
 	}
 
+	// sync with localStorage
 	useEffect(() => {
 		console.log(data);
 		localStorage.setItem("note", JSON.stringify(data));
 	}, [data]);
 
+	// delete note
 	const deleteNote = (id) => {
 		setData((prev) => prev.filter((item) => item.id !== id));
 	};
@@ -135,11 +145,12 @@ const AddNote = () => {
 				</form>
 			</div>
 
+			{/* NOTES LIST */}
 			<div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-				{data?.map((nee, idx) => {
+				{data?.map((nee) => {
 					return (
 						<CardInfo
-							key={idx}
+							key={nee.id}
 							id={nee.id}
 							imagePath={nee.imagep}
 							name={nee.name}
