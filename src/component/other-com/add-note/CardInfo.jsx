@@ -11,8 +11,8 @@ const CardInfo = ({
 	return (
 		<div className="bg-neutral-primary-soft block max-w-sm p-3 border border-default rounded-2xl shadow-xs mb-10">
 			{imagePath && (
-				<a href="#">
-					<img className="rounded-2xl" src={imagePath} alt="" />
+				<a href="#" className="max-h-40 overflow-hidden block rounded-2xl">
+					<img className="object-cover object-center" src={imagePath} alt="" />
 				</a>
 			)}
 			{name && (

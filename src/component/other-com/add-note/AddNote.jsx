@@ -9,7 +9,18 @@ const AddNote = () => {
 	const [phone, setPhone] = useState("");
 	const [textdata, setTextdata] = useState("");
 
-	const [data, setData] = useState([]);
+	const [data, setData] = useState(() => {
+		const savedData = localStorage.getItem("note");
+		return savedData ? JSON.parse(savedData) : [];
+	});
+
+	const resetForm = () => {
+		setName("");
+		setImagep("");
+		setEmail("");
+		setPhone("");
+		setTextdata("");
+	};
 
 	function formHandel(e) {
 		e.preventDefault();
@@ -27,21 +38,17 @@ const AddNote = () => {
 			},
 		]);
 
-		setName("");
-		setImagep("");
-		setEmail("");
-		setPhone("");
-		setTextdata("");
+		resetForm();
 	}
 
 	useEffect(() => {
 		console.log(data);
+		localStorage.setItem("note", JSON.stringify(data));
 	}, [data]);
 
-	function deleteHandle(id) {
+	const deleteNote = (id) => {
 		setData((prev) => prev.filter((item) => item.id !== id));
-		// console.log(id);
-	}
+	};
 
 	return (
 		<>
@@ -60,6 +67,7 @@ const AddNote = () => {
 								Name
 							</label>
 							<input
+								required
 								type="text"
 								value={name}
 								placeholder="Enter your name"
@@ -84,6 +92,7 @@ const AddNote = () => {
 								Email
 							</label>
 							<input
+								required
 								type="email"
 								value={email}
 								placeholder="Enter your email"
@@ -138,7 +147,7 @@ const AddNote = () => {
 							phone={nee.phone}
 							timeSet={nee.time}
 							textWrap={nee.textdata}
-							deleteCard={deleteHandle}
+							deleteCard={deleteNote}
 						/>
 					);
 				})}
