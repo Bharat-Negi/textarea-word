@@ -8,6 +8,7 @@ import Home from "./pages/home";
 import PageNotFound from "./pages/page-notfound";
 import DynamicPage from "./component/other-com/dynamicRoute/DynamicPage";
 import ClientPage from "./component/other-com/dynamicRoute/ClientPage";
+import SearchPage from "./component/other-com/search/SearchPage";
 
 function App() {
 	return (
@@ -22,6 +23,7 @@ function App() {
 					<Route path="/redux-page" element={<ReduxCom />} />
 					<Route path="/dynamic-page" element={<DynamicPage />} />
 					<Route path="/dynamic-page/:id" element={<ClientPage />} />
+					<Route path="/search-page/" element={<SearchPage />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>

@@ -9,6 +9,7 @@ const home = () => {
 			<Link to="/add-note">Add Notes</Link>
 			<Link to="/redux-page">Redux</Link>
 			<Link to="/dynamic-page">Dynamic Page</Link>
+			<Link to="/search-page">Search Page</Link>
 		</ul>
 	);
 };
