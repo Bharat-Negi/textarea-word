@@ -15,10 +15,6 @@ const ReduxCom = () => {
 
 	return (
 		<>
-			<div className="my-3">
-				<Link to="/">Home</Link>
-			</div>
-
 			<h1>{count}</h1>
 			<div className="flex gap-3 mb-4">
 				<button

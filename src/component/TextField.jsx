@@ -15,12 +15,9 @@ const TextField = () => {
 
 	return (
 		<>
-			<div className="my-3">
-				<Link to="/">Home</Link>
-			</div>
-			<h1 className="text-center">Find Word</h1>
+			<h1 className="text-center text-2xl mb-3">Find Word</h1>
 			<textarea
-				className="w-100"
+				className="w-full border p-3"
 				name="word_counter"
 				id=""
 				onChange={handleChange}

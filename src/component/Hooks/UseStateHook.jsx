@@ -49,12 +49,13 @@ const UseStateHook = () => {
 					value={name}
 					type="text"
 					onChange={(e) => setName(e.target.value)}
+					className="border"
 				/>
 				<h1>
 					{name} has clicked {counter} times!!
 				</h1>
 				<button
-					className="bg-red-500 py-1 px-2 rounded text-white"
+					className="bg-red-500 py-1 px-2 rounded text-white mr-2"
 					onClick={increaseCounter}
 				>
 					Increase
@@ -67,7 +68,7 @@ const UseStateHook = () => {
 				</button>
 			</div>
 
-			<hr />
+			<hr className="my-5" />
 
 			{/* Object state example */}
 			<div>
@@ -75,12 +76,13 @@ const UseStateHook = () => {
 					value={details.name}
 					type="text"
 					onChange={handleObjNameChange}
+					className="border"
 				/>
 				<h1>
 					{details.name} has clicked {details.objcounter} times!!
 				</h1>
 				<button
-					className="bg-green-500 py-1 px-2 rounded text-white"
+					className="bg-green-500 py-1 px-2 rounded text-white mr-2"
 					onClick={increaseCounterObj}
 				>
 					Increase

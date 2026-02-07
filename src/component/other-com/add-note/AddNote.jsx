@@ -62,10 +62,6 @@ const AddNote = () => {
 
 	return (
 		<>
-			<div className="my-3">
-				<Link to="/">Home</Link>
-			</div>
-
 			<div className="bg-gray-100 flex items-center justify-center p-4 mb-5">
 				<form
 					onSubmit={formHandel}

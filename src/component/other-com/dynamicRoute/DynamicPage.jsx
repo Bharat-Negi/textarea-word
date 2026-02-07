@@ -25,15 +25,21 @@ const DynamicPage = () => {
 
 	return (
 		<>
-			<div className="my-3">
-				<Link to="/">Home</Link>
-			</div>
 			<div>
-				<ul>
+				<ul className="grid grid-cols-2 gap-4">
 					{user.map((e) => {
 						return (
-							<li key={e.id}>
-								{e.name} ----- goto page <Link to={`${e.id}`}>Read more</Link>
+							<li
+								key={e.id}
+								className="bg-gray-200 p-3 border border-gray-400 rounded"
+							>
+								{e.name}{" "}
+								<span className="flex text-sm justify-between">
+									goto page
+									<Link to={`${e.id}`} className="text-blue-500">
+										Read more
+									</Link>
+								</span>
 							</li>
 						);
 					})}

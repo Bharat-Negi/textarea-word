@@ -6,9 +6,13 @@ const CustomHooks = () => {
 
 	return (
 		<>
-			<ul>
+			<ul className="grid grid-cols-4 gap-3">
 				{data.map((value, index) => {
-					return <li key={index}>{value.name}</li>;
+					return (
+						<li key={index} className="bg-gray-200 p-3 rounded ">
+							{value.name}
+						</li>
+					);
 				})}
 			</ul>
 		</>
