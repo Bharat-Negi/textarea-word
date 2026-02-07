@@ -10,7 +10,7 @@ const LoopData = ({ search }) => {
 					"https://jsonplaceholder.typicode.com/todos",
 				);
 				const datafile = await res.data;
-				console.log(datafile);
+				// console.log(datafile);
 				setData(datafile);
 			} catch (error) {
 				console.log(error);

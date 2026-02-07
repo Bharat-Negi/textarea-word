@@ -11,6 +11,7 @@ import ClientPage from "./component/other-com/dynamicRoute/ClientPage";
 import SearchPage from "./component/other-com/search/SearchPage";
 import MobileNumber from "./component/other-com/otp-login/MobileNumber";
 import NavBar from "./component/NavBar";
+import MoviePage from "./component/other-com/movie-ticket/MoviePage";
 
 function App() {
 	return (
@@ -28,6 +29,7 @@ function App() {
 					<Route path="/dynamic-page/:id" element={<ClientPage />} />
 					<Route path="/search-page" element={<SearchPage />} />
 					<Route path="/mobile-otp" element={<MobileNumber />} />
+					<Route path="/movie-booking" element={<MoviePage />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>

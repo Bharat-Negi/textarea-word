@@ -27,7 +27,7 @@ const TextField = () => {
 			></textarea>
 			<h3>Word: {wordcount}</h3>
 			<h3>Text: {wordText}</h3>
-			<p>{cloneWord}</p>
+			<p>Clone Text: {cloneWord}</p>
 		</>
 	);
 };

@@ -1,48 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-
-const NavLink = [
-	{
-		id: 1,
-		link: "/text-field",
-		text: "Text Area",
-	},
-	{
-		id: 2,
-		link: "/use-state",
-		text: "useState",
-	},
-	{
-		id: 3,
-		link: "/custom-hooks",
-		text: "Custom Hooks",
-	},
-	{
-		id: 4,
-		link: "/add-note",
-		text: "Add Notes",
-	},
-	{
-		id: 5,
-		link: "/redux-page",
-		text: "Redux",
-	},
-	{
-		id: 6,
-		link: "/dynamic-page",
-		text: "Search Page",
-	},
-	{
-		id: 7,
-		link: "/search-page",
-		text: "Text Area",
-	},
-	{
-		id: 8,
-		link: "/mobile-otp",
-		text: "Mobile Otp",
-	},
-];
+import NavLink from "../../public/json/nav-data.json";
 
 const NavBar = () => {
 	const location = useLocation();
