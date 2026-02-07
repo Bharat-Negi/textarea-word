@@ -9,16 +9,8 @@ const fetchBookedSeatsFromServer = async () => {
 };
 
 const CinemaSeatBooking = ({
-	layout = {
-		rows: 8,
-		seatsPerRow: 12,
-		aislePosition: 5,
-	},
-	seatTypes = {
-		regular: { name: "Regular", price: 150, rows: [0, 1, 2] },
-		premium: { name: "Premium", price: 250, rows: [3, 4, 5] },
-		vip: { name: "VIP", price: 350, rows: [6, 7] },
-	},
+	layout = {},
+	seatTypes = {},
 	bookedSeats = [],
 	currency = "₹",
 	onBookingComplete = () => {},
@@ -335,7 +327,7 @@ const CinemaSeatBooking = ({
 				</button>
 				<button
 					onClick={startNewShow}
-					className="w-full mt-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold cursor-pointe"
+					className="w-full mt-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold cursor-pointer"
 				>
 					Start New Show
 				</button>

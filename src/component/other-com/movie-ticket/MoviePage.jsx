@@ -7,14 +7,15 @@ const MoviePage = () => {
 			layout={{
 				rows: 8,
 				seatsPerRow: 12,
-				aislePosition: 5,
+				aislePosition: 7,
 			}}
 			seatTypes={{
-				regular: { name: "Regular", price: 150, rows: [0, 1, 2] },
-				premium: { name: "Premium", price: 250, rows: [3, 4, 5] },
-				vip: { name: "VIP", price: 350, rows: [6, 7] },
+				basic: { name: "Basic", price: 100, rows: [0, 1] },
+				regular: { name: "Regular", price: 200, rows: [2, 3, 4] },
+				premium: { name: "Premium", price: 300, rows: [5, 6] },
+				vip: { name: "VIP", price: 400, rows: [7] },
 			}}
-			bookedSeats={["C2", "C4"]}
+			bookedSeats={[]}
 			onBookingComplete={(booking) => console.log(booking)}
 		/>
 	);
