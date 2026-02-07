@@ -1,19 +1,22 @@
 import { Route, Routes } from "react-router-dom";
+import Home from "./pages/home";
 import CustomHooks from "./component/Hooks/CustomHooks";
 import UseStateHook from "./component/Hooks/UseStateHook";
 import AddNote from "./component/other-com/add-note/AddNote";
 import ReduxCom from "./component/other-com/redux-file/ReduxCom";
 import TextField from "./component/TextField";
-import Home from "./pages/home";
 import PageNotFound from "./pages/page-notfound";
 import DynamicPage from "./component/other-com/dynamicRoute/DynamicPage";
 import ClientPage from "./component/other-com/dynamicRoute/ClientPage";
 import SearchPage from "./component/other-com/search/SearchPage";
+import MobileNumber from "./component/other-com/otp-login/MobileNumber";
+import NavBar from "./component/NavBar";
 
 function App() {
 	return (
 		<>
-			<div className="container mt-5">
+			<NavBar />
+			<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 mt-5">
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/text-field" element={<TextField />} />
@@ -23,7 +26,8 @@ function App() {
 					<Route path="/redux-page" element={<ReduxCom />} />
 					<Route path="/dynamic-page" element={<DynamicPage />} />
 					<Route path="/dynamic-page/:id" element={<ClientPage />} />
-					<Route path="/search-page/" element={<SearchPage />} />
+					<Route path="/search-page" element={<SearchPage />} />
+					<Route path="/mobile-otp" element={<MobileNumber />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>

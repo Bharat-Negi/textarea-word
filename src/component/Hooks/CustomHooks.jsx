@@ -6,9 +6,6 @@ const CustomHooks = () => {
 
 	return (
 		<>
-			<div className="my-3">
-				<Link to="/">Home</Link>
-			</div>
 			<ul>
 				{data.map((value, index) => {
 					return <li key={index}>{value.name}</li>;

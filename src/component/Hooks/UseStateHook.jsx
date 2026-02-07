@@ -43,9 +43,6 @@ const UseStateHook = () => {
 
 	return (
 		<>
-			<div className="my-3">
-				<Link to="/">Home</Link>
-			</div>
 			{/* Primitive state example */}
 			<div>
 				<input
