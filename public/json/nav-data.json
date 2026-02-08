@@ -43,5 +43,10 @@
 		"id": 9,
 		"link": "/movie-booking",
 		"text": "Movie Ticket"
+	},
+	{
+		"id": 10,
+		"link": "/breadcrumb",
+		"text": "Breadcrumb Page"
 	}
 ]

@@ -12,12 +12,16 @@ import SearchPage from "./component/other-com/search/SearchPage";
 import MobileNumber from "./component/other-com/otp-login/MobileNumber";
 import NavBar from "./component/NavBar";
 import MoviePage from "./component/other-com/movie-ticket/MoviePage";
+import BreadcrumbPage from "./component/other-com/breadcrumb/BreadcrumbPage";
+import BreadCurmPageTwo from "./component/other-com/breadcrumb/BreadCurmPageTwo";
+import BreadCrum from "./component/other-com/breadcrumb/BreadCrum";
 
 function App() {
 	return (
 		<>
 			<NavBar />
 			<div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 mt-5">
+				<BreadCrum />
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/text-field" element={<TextField />} />
@@ -30,6 +34,8 @@ function App() {
 					<Route path="/search-page" element={<SearchPage />} />
 					<Route path="/mobile-otp" element={<MobileNumber />} />
 					<Route path="/movie-booking" element={<MoviePage />} />
+					<Route path="/breadcrumb" element={<BreadcrumbPage />} />
+					<Route path="/breadcrumb/:id" element={<BreadCurmPageTwo />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>
