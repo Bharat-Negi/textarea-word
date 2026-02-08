@@ -8,6 +8,12 @@ const BreadCrum = () => {
 
 	let breadcrumbPath = "";
 
+	const formatLabel = (text) => {
+		return text
+			.replace(/-/g, " ")
+			.replace(/\b\w/g, (char) => char.toUpperCase());
+	};
+
 	return (
 		<nav className="flex mb-5" aria-label="Breadcrumb">
 			<ol className="inline-flex items-center space-x-1 md:space-x-2">
@@ -33,14 +39,14 @@ const BreadCrum = () => {
 
 							{isLast ? (
 								<span className="text-sm font-medium text-body-subtle capitalize">
-									{name}
+									{formatLabel(name)}
 								</span>
 							) : (
 								<Link
 									to={breadcrumbPath}
 									className="text-sm font-medium text-body hover:text-fg-brand capitalize"
 								>
-									{name}
+									{formatLabel(name)}
 								</Link>
 							)}
 						</li>

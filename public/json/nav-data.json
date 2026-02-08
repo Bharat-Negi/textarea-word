@@ -48,5 +48,10 @@
 		"id": 10,
 		"link": "/breadcrumb",
 		"text": "Breadcrumb Page"
+	},
+	{
+		"id": 12,
+		"link": "/weather-page",
+		"text": "Weather Page"
 	}
 ]
