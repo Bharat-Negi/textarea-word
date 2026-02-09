@@ -53,5 +53,10 @@
 		"id": 12,
 		"link": "/weather-page",
 		"text": "Weather Page"
+	},
+	{
+		"id": 13,
+		"link": "/atm-page",
+		"text": "ATM Page"
 	}
 ]

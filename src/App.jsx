@@ -16,6 +16,7 @@ import BreadcrumbPage from "./component/other-com/breadcrumb/BreadcrumbPage";
 import BreadCurmPageTwo from "./component/other-com/breadcrumb/BreadCurmPageTwo";
 import BreadCrum from "./component/other-com/breadcrumb/BreadCrum";
 import WeatherApp from "./component/other-com/weather-page/WeatherApp";
+import AtmPage from "./pages/atm-page";
 
 function App() {
 	return (
@@ -38,6 +39,7 @@ function App() {
 					<Route path="/breadcrumb" element={<BreadcrumbPage />} />
 					<Route path="/breadcrumb/:id" element={<BreadCurmPageTwo />} />
 					<Route path="/weather-page" element={<WeatherApp />} />
+					<Route path="/atm-page" element={<AtmPage />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>

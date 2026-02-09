@@ -58,8 +58,16 @@ const weatherSlice = createSlice({
 				state.loading = false;
 				state.data = action.payload;
 			})
+			.addCase(fetchWeatherByCity.rejected, (state, action) => {
+				state.loading = false;
+				state.error = action.error.message;
+			})
 			.addCase(fetchForecast.fulfilled, (state, action) => {
 				state.forecast = action.payload.list.filter((_, i) => i % 8 === 0);
+			})
+			.addCase(fetchForecast.rejected, (state, action) => {
+				state.loading = false;
+				state.error = action.error.message;
 			});
 	},
 });
