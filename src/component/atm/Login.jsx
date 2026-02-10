@@ -9,7 +9,7 @@ const Login = () => {
 	const { message } = useSelector((state) => state.atm);
 
 	return (
-		<div>
+		<div className="w-95 bg-black text-green-400 p-6 rounded-xl shadow-lg border-4 border-gray-700">
 			<input
 				type="password"
 				placeholder="Enter PIN"

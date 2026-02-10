@@ -1,40 +1,92 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-/* Save data pin change */
-const saveState = (state) => {
-	localStorage.setItem("atmData", JSON.stringify(state));
-};
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+// Import users data from JSON file
+import usersData from "../../../public/json/atm-users.json"; // Create this file in your project
 
 /* Load saved data */
-const storedATM = JSON.parse(localStorage.getItem("atmData"));
+const loadStoredATM = () => {
+	try {
+		const storedData = localStorage.getItem("atmData");
+		if (!storedData) return null;
+
+		const parsedData = JSON.parse(storedData);
+
+		// Reset currentUser to null for security when loading from storage
+		return {
+			...parsedData,
+			currentUser: null,
+			message: "",
+		};
+	} catch (error) {
+		console.error("Error loading ATM data:", error);
+		toast.error("Error loading saved data");
+		return null;
+	}
+};
+
+/* Save data pin change */
+const saveState = (state) => {
+	try {
+		// Create a clean copy without currentUser for security
+		const stateToSave = {
+			...state,
+			currentUser: null,
+			message: "",
+		};
+		localStorage.setItem("atmData", JSON.stringify(stateToSave));
+	} catch (error) {
+		console.error("Error saving ATM data:", error);
+		toast.error("Error saving data");
+	}
+};
+
+/* Show toast notification */
+const showToast = (type, message, options = {}) => {
+	const defaultOptions = {
+		position: "top-right",
+		autoClose: 3000,
+		hideProgressBar: false,
+		closeOnClick: true,
+		pauseOnHover: true,
+		draggable: true,
+		theme: "colored",
+		...options,
+	};
+
+	switch (type) {
+		case "success":
+			toast.success(message, defaultOptions);
+			break;
+		case "error":
+			toast.error(message, defaultOptions);
+			break;
+		case "warning":
+			toast.warning(message, defaultOptions);
+			break;
+		case "info":
+			toast.info(message, defaultOptions);
+			break;
+		default:
+			toast(message, defaultOptions);
+	}
+};
 
 /* update user data */
 const updateUserInUsers = (state, updatedUser) => {
 	const index = state.users.findIndex((u) => u.id === updatedUser.id);
 
 	if (index !== -1) {
-		state.users[index] = updatedUser; // ✅ update users array
-		state.currentUser = updatedUser; // ✅ sync currentUser
+		state.users[index] = updatedUser;
+		state.currentUser = updatedUser;
 	}
 };
 
+const storedATM = loadStoredATM();
+
 const initialState = storedATM || {
-	users: [
-		{
-			id: 1,
-			name: "Bharat",
-			pin: "1111",
-			balance: 10000,
-			history: [],
-		},
-		{
-			id: 2,
-			name: "Amit",
-			pin: "2222",
-			balance: 8000,
-			history: [],
-		},
-	],
+	users: usersData,
 	currentUser: null,
 	message: "",
 };
@@ -46,67 +98,120 @@ const atmSlice = createSlice({
 		login: (state, action) => {
 			const user = state.users.find((u) => u.pin === action.payload);
 			if (user) {
-				state.currentUser = user;
-				state.message = "Login successful ✅";
+				state.currentUser = { ...user };
+				state.message = "Login successful";
+				showToast("success", "Login successful");
 			} else {
-				state.message = "Invalid PIN ❌";
+				state.message = "Invalid PIN";
+				showToast("error", "Invalid PIN");
 			}
-			saveState(state); // ✅ SAVE HERE
+			saveState(state);
 		},
 
 		deposit: (state, action) => {
-			state.currentUser.balance += action.payload;
+			if (!state.currentUser) {
+				state.message = "No active session";
+				showToast("error", "No active session", {
+					position: "top-center",
+				});
+				return;
+			}
+
+			const amount = Number(action.payload);
+			if (isNaN(amount) || amount <= 0) {
+				state.message = "Invalid deposit amount";
+				showToast("error", "Invalid deposit amount");
+				return;
+			}
+
+			state.currentUser.balance += amount;
 			state.currentUser.history.push({
 				type: "Deposit",
-				amount: action.payload,
-				date: new Date().toLocaleString(),
+				amount: amount,
+				date: new Date().toISOString(),
 			});
-			saveState(state); // ✅ SAVE HERE
+
+			updateUserInUsers(state, state.currentUser);
+			state.message = `Deposited ₹${amount} successfully`;
+			showToast("success", `Deposited ₹${amount} successfully`, {
+				autoClose: 2000,
+			});
+			saveState(state);
 		},
 
 		withdraw: (state, action) => {
-			if (action.payload <= state.currentUser.balance) {
-				state.currentUser.balance -= action.payload;
-				state.currentUser.history.push({
-					type: "Withdraw",
-					amount: action.payload,
-					date: new Date().toLocaleString(),
+			if (!state.currentUser) {
+				state.message = "No active session";
+				showToast("error", "No active session", {
+					position: "top-center",
 				});
-			} else {
-				state.message = "Insufficient balance ❌";
+				return;
 			}
-			saveState(state); // ✅ SAVE HERE
+
+			const amount = Number(action.payload);
+			if (isNaN(amount) || amount <= 0) {
+				state.message = "Invalid withdrawal amount";
+				showToast("error", "Invalid withdrawal amount");
+				return;
+			}
+
+			if (amount > state.currentUser.balance) {
+				state.message = "Insufficient balance";
+				showToast("error", "Insufficient balance", {
+					autoClose: 4000,
+				});
+				return;
+			}
+
+			state.currentUser.balance -= amount;
+			state.currentUser.history.push({
+				type: "Withdraw",
+				amount: amount,
+				date: new Date().toISOString(),
+			});
+
+			updateUserInUsers(state, state.currentUser);
+			state.message = `Withdrawn ₹${amount} successfully`;
+			showToast("error", `Withdrawn ₹${amount} successfully`, {
+				autoClose: 2000,
+			});
+			saveState(state);
 		},
 
 		changePin: (state, action) => {
+			if (!state.currentUser) {
+				state.message = "No active session";
+				showToast("error", "No active session", {
+					position: "top-center",
+				});
+				return;
+			}
+
 			const { oldPin, newPin } = action.payload;
 
-			// ❌ no logged-in user
-			if (!state.currentUser) {
-				state.message = "No active session ❌";
-				return;
-			}
-
-			// ❌ old PIN wrong
+			// Validation checks
 			if (state.currentUser.pin !== oldPin) {
-				state.message = "Old PIN is incorrect ❌";
-				console.log(state.message);
+				state.message = "Old PIN is incorrect";
+				showToast("error", "Old PIN is incorrect");
 				return;
 			}
 
-			// ❌ new PIN same as old
 			if (oldPin === newPin) {
-				state.message = "New PIN cannot be same as old PIN ❌";
-				console.log(state.message);
+				state.message = "New PIN cannot be same as old PIN";
+				showToast("warning", "New PIN cannot be same as old PIN");
 				return;
 			}
 
-			// ❌ duplicate PIN check
-			const pinExists = state.users.some((u) => u.pin === newPin);
+			if (newPin.length !== 4 || !/^\d+$/.test(newPin)) {
+				state.message = "PIN must be 4 digits";
+				showToast("warning", "PIN must be 4 digits");
+				return;
+			}
 
+			const pinExists = state.users.some((u) => u.pin === newPin);
 			if (pinExists) {
-				state.message = "PIN already in use ❌";
-				console.log(state.message);
+				state.message = "PIN already in use";
+				showToast("error", "PIN already in use");
 				return;
 			}
 
@@ -116,19 +221,94 @@ const atmSlice = createSlice({
 			};
 
 			updateUserInUsers(state, updatedUser);
-
-			state.message = "PIN changed successfully 🔐";
-			console.log(state.message);
+			state.message = "PIN changed successfully";
+			showToast("success", "PIN changed successfully", {
+				autoClose: 2500,
+			});
 			saveState(state);
 		},
 
 		logout: (state) => {
 			state.currentUser = null;
-			state.message = "Session ended 👋";
+			state.message = "Session ended";
+			showToast("info", "Session ended", {
+				position: "bottom-center",
+				autoClose: 2000,
+			});
 			saveState(state);
+		},
+
+		// Manual toast triggers for testing
+		showSuccessToast: () => {
+			showToast("success", "This is a success message");
+		},
+
+		showErrorToast: () => {
+			showToast("error", "This is an error message");
+		},
+
+		showWarningToast: () => {
+			showToast("warning", "This is a warning message");
+		},
+
+		showInfoToast: () => {
+			showToast("info", "This is an info message");
+		},
+
+		// Toast with different positions
+		showTopLeftToast: () => {
+			showToast("success", "Top-left notification", {
+				position: "top-left",
+			});
+		},
+
+		showBottomRightToast: () => {
+			showToast("info", "Bottom-right notification", {
+				position: "bottom-right",
+			});
+		},
+
+		// Long duration toast
+		showPersistentToast: () => {
+			showToast("warning", "This toast will stay longer", {
+				autoClose: 10000, // 10 seconds
+			});
+		},
+
+		// Toast with custom styling
+		showCustomToast: () => {
+			toast("Custom styled toast!", {
+				position: "top-center",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "dark",
+				style: {
+					background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+					color: "white",
+					fontWeight: "bold",
+				},
+			});
 		},
 	},
 });
 
-export const { login, deposit, withdraw, logout, changePin } = atmSlice.actions;
+export const {
+	login,
+	deposit,
+	withdraw,
+	logout,
+	changePin,
+	showSuccessToast,
+	showErrorToast,
+	showWarningToast,
+	showInfoToast,
+	showTopLeftToast,
+	showBottomRightToast,
+	showPersistentToast,
+	showCustomToast,
+} = atmSlice.actions;
 export default atmSlice.reducer;

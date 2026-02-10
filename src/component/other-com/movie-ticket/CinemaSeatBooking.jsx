@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 
-//  🔴 Simulate backend API call for seats booked by other users
+// 🔴 Simulate backend API call for seats booked by other users
 const fetchBookedSeatsFromServer = async () => {
 	// Simulate network delay
 	await new Promise((res) => setTimeout(res, 500));
@@ -17,6 +17,7 @@ const CinemaSeatBooking = ({
 	onBookingComplete = () => {},
 	title = "Cinema Hall Booking",
 	subtitle = "Select your preferred seats",
+	storageKey = "cinemaBookingData", // Local storage key
 }) => {
 	// 🎨 Color palette memoized to avoid re-creation
 	const colors = useMemo(
@@ -96,9 +97,54 @@ const CinemaSeatBooking = ({
 		return seats;
 	}, [layout, bookedSeats, getSeatType]);
 
+	// 🧠 Load initial state from local storage
+	const loadFromLocalStorage = () => {
+		try {
+			const savedData = localStorage.getItem(storageKey);
+			if (savedData) {
+				const parsedData = JSON.parse(savedData);
+
+				// Check if saved data matches current layout
+				if (
+					parsedData.layout &&
+					parsedData.layout.rows === layout.rows &&
+					parsedData.layout.seatsPerRow === layout.seatsPerRow
+				) {
+					// Transform saved seats array back to 2D structure
+					const savedSeats = initializeSeats.map((row, rowIndex) =>
+						row.map((seat, seatIndex) => {
+							const savedSeat = parsedData.seats
+								.flat()
+								.find((s) => s.id === seat.id);
+							if (savedSeat) {
+								return { ...seat, status: savedSeat.status };
+							}
+							return seat;
+						}),
+					);
+
+					return {
+						seats: savedSeats,
+						selectedSeats: [],
+						savedBookings: parsedData.bookings || [],
+					};
+				}
+			}
+		} catch (error) {
+			console.error("Error loading from localStorage:", error);
+		}
+
+		return {
+			seats: initializeSeats,
+			selectedSeats: [],
+			savedBookings: [],
+		};
+	};
+
 	// 🧠 Component State
 	const [seats, setSeats] = useState(initializeSeats);
 	const [selectedSeats, setSelectedSeats] = useState([]);
+	const [savedBookings, setSavedBookings] = useState([]);
 
 	// 🎨 Get Tailwind classes based on seat color
 	const getColorClass = (colorName) => {
@@ -118,22 +164,29 @@ const CinemaSeatBooking = ({
 		return colorMap[colorName] || colorMap.blue;
 	};
 
-	// 🪑 Seat UI class generator
-	const getSeatClassName = (seat) => {
-		const baseClass =
-			"w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold border-blue-300 text-blue-800 bg-blue-100";
+	// 💾 Save to local storage
+	const saveToLocalStorage = (updatedSeats, newBooking = null) => {
+		try {
+			const dataToSave = {
+				layout: {
+					rows: layout.rows,
+					seatsPerRow: layout.seatsPerRow,
+					aislePosition: layout.aislePosition,
+				},
+				seatTypes,
+				seats: updatedSeats,
+				bookings: newBooking ? [...savedBookings, newBooking] : savedBookings,
+				lastUpdated: new Date().toISOString(),
+			};
 
-		// Booked / unavailable seat
-		if (seat.status === "booked" || seat.price === 0) {
-			return `${baseClass} bg-gray-400 border-gray-500 text-gray-600 !cursor-not-allowed`;
-		}
-		// Selected seat
-		if (seat.selected) {
-			return `${baseClass} bg-green-400 border-green-500 text-white transform scale-110`;
-		}
+			localStorage.setItem(storageKey, JSON.stringify(dataToSave));
 
-		// Available seat
-		return `${baseClass} ${getColorClass(seat.color)}`;
+			if (newBooking) {
+				setSavedBookings((prev) => [...prev, newBooking]);
+			}
+		} catch (error) {
+			console.error("Error saving to localStorage:", error);
+		}
 	};
 
 	// 🖱️ Handle seat selection
@@ -145,15 +198,15 @@ const CinemaSeatBooking = ({
 		const isCurrentlySelected = seat.selected;
 
 		// Toggle seat selected state
-		setSeats((prevSeats) =>
-			prevSeats.map((row, rIdx) =>
-				row.map((s, sIdx) =>
-					rIdx === rowIndex && sIdx === seatIndex
-						? { ...s, selected: !s.selected }
-						: s,
-				),
+		const updatedSeats = seats.map((row, rIdx) =>
+			row.map((s, sIdx) =>
+				rIdx === rowIndex && sIdx === seatIndex
+					? { ...s, selected: !s.selected }
+					: s,
 			),
 		);
+
+		setSeats(updatedSeats);
 
 		// Update selected seats list
 		if (isCurrentlySelected) {
@@ -183,6 +236,24 @@ const CinemaSeatBooking = ({
 		);
 	};
 
+	// 🪑 Seat UI class generator
+	const getSeatClassName = (seat) => {
+		const baseClass =
+			"w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold border-blue-300 text-blue-800 bg-blue-100";
+
+		// Booked / unavailable seat
+		if (seat.status === "booked" || seat.price === 0) {
+			return `${baseClass} bg-gray-400 border-gray-500 text-gray-600 !cursor-not-allowed`;
+		}
+		// Selected seat
+		if (seat.selected) {
+			return `${baseClass} bg-green-400 border-green-500 text-white transform scale-110`;
+		}
+
+		// Available seat
+		return `${baseClass} ${getColorClass(seat.color)}`;
+	};
+
 	// 🎫 Unique seat types for legend
 	const uniqueSeatTypes = Object.entries(seatTypes).map(
 		([type, config], index) => {
@@ -199,23 +270,36 @@ const CinemaSeatBooking = ({
 		return selectedSeats.reduce((total, seat) => total + (seat.price || 0), 0);
 	};
 
-	//  ✅ Final booking handler
+	// ✅ Final booking handler
 	const handleBooking = () => {
 		if (selectedSeats.length === 0) {
 			alert("Please select at least one seat");
 			return;
 		}
+
 		// Mark selected seats as booked
-		setSeats((prevSeats) => {
-			return prevSeats.map((row) =>
-				row.map((seat) => {
-					if (selectedSeats.some((selected) => selected.id === seat.id)) {
-						return { ...seat, status: "booked", selected: false };
-					}
-					return seat;
-				}),
-			);
-		});
+		const updatedSeats = seats.map((row) =>
+			row.map((seat) => {
+				if (selectedSeats.some((selected) => selected.id === seat.id)) {
+					return { ...seat, status: "booked", selected: false };
+				}
+				return seat;
+			}),
+		);
+
+		setSeats(updatedSeats);
+
+		// Create booking record
+		const bookingRecord = {
+			id: Date.now(),
+			date: new Date().toISOString(),
+			seats: selectedSeats.map((seat) => seat.id),
+			totalPrice: getTotalPrice(),
+			seatDetails: selectedSeats,
+		};
+
+		// Save to local storage
+		saveToLocalStorage(updatedSeats, bookingRecord);
 
 		// Callback to parent
 		onBookingComplete({
@@ -231,6 +315,56 @@ const CinemaSeatBooking = ({
 
 		// Reset selection
 		setSelectedSeats([]);
+	};
+
+	// 🎬 Reset seats for a new show
+	const startNewShow = () => {
+		const confirmed = window.confirm(
+			"Are you sure you want to start a new show? This will clear all bookings.",
+		);
+
+		if (confirmed) {
+			// Clear local storage for this key
+			localStorage.removeItem(storageKey);
+
+			setSeats(initializeSeats);
+			setSelectedSeats([]);
+			setSavedBookings([]);
+
+			alert("🎬 New show started - All bookings cleared!");
+		}
+	};
+
+	// 📋 Clear all local storage
+	const clearAllStorage = () => {
+		const confirmed = window.confirm(
+			"Are you sure you want to clear ALL stored booking data? This cannot be undone.",
+		);
+
+		if (confirmed) {
+			localStorage.clear();
+			setSeats(initializeSeats);
+			setSelectedSeats([]);
+			setSavedBookings([]);
+			alert("All booking data cleared!");
+		}
+	};
+
+	// 📋 View booking history
+	const viewBookingHistory = () => {
+		if (savedBookings.length === 0) {
+			alert("No booking history found.");
+			return;
+		}
+
+		const history = savedBookings
+			.map(
+				(booking) =>
+					`Booking #${booking.id}: ${booking.seats.length} seat(s) - ${currency}${booking.totalPrice} (${new Date(booking.date).toLocaleDateString()})`,
+			)
+			.join("\n");
+
+		alert(`Booking History:\n\n${history}`);
 	};
 
 	// 🔄 Poll server for seats booked by other users
@@ -258,12 +392,27 @@ const CinemaSeatBooking = ({
 		return () => clearInterval(interval);
 	}, []);
 
-	// 🎬 Reset seats for a new show
-	const startNewShow = () => {
-		setSeats(initializeSeats);
-		setSelectedSeats([]);
-		alert("🎬 New show started");
-	};
+	// 💾 Load from local storage on mount
+	useEffect(() => {
+		const loadedData = loadFromLocalStorage();
+
+		// Use a cleanup function to defer state updates
+		const timeoutId = setTimeout(() => {
+			setSeats(loadedData.seats);
+			setSavedBookings(loadedData.savedBookings);
+		}, 0);
+
+		return () => clearTimeout(timeoutId);
+	}, []);
+
+	// 💾 Auto-save seats when they change
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			saveToLocalStorage(seats);
+		}, 500); // Debounce save
+
+		return () => clearTimeout(timeoutId);
+	}, [seats]);
 
 	/* ========================= JSX ============================== */
 	return (
@@ -273,7 +422,21 @@ const CinemaSeatBooking = ({
 				<h1 className="text-2xl lg:text-3xl font-bold text-center mb-2 text-gray-800">
 					{title}
 				</h1>
-				<p className="text-center text-gray-600 mb-6">{subtitle}</p>
+				<p className="text-center text-gray-600 mb-2">{subtitle}</p>
+
+				{/* Local Storage Info */}
+				<div className="text-center mb-4">
+					<div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm">
+						<svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+							<path
+								fillRule="evenodd"
+								d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+								clipRule="evenodd"
+							/>
+						</svg>
+						<span>Data saved locally ({savedBookings.length} bookings)</span>
+					</div>
+				</div>
 
 				{/* Screen */}
 				<div className="mb-8">
@@ -366,12 +529,28 @@ const CinemaSeatBooking = ({
 						? `Book ${selectedSeats.length} Seat(s) - ${currency}${getTotalPrice()}`
 						: "Select Seats to Book"}
 				</button>
-				<button
-					onClick={startNewShow}
-					className="w-full mt-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold cursor-pointer"
-				>
-					Start New Show
-				</button>
+
+				{/* Utility Buttons */}
+				<div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+					<button
+						onClick={startNewShow}
+						className="py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold cursor-pointer"
+					>
+						Start New Show
+					</button>
+					<button
+						onClick={viewBookingHistory}
+						className="py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white font-bold cursor-pointer"
+					>
+						View History ({savedBookings.length})
+					</button>
+					<button
+						onClick={clearAllStorage}
+						className="py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-bold cursor-pointer"
+					>
+						Clear All Data
+					</button>
+				</div>
 			</div>
 		</div>
 	);

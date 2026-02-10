@@ -1,0 +1,30 @@
+[
+	{
+		"id": 1,
+		"name": "Bharat",
+		"pin": "1111",
+		"balance": 10000,
+		"history": []
+	},
+	{
+		"id": 2,
+		"name": "Amit",
+		"pin": "2222",
+		"balance": 8000,
+		"history": []
+	},
+	{
+		"id": 3,
+		"name": "Priya",
+		"pin": "3333",
+		"balance": 15000,
+		"history": []
+	},
+	{
+		"id": 4,
+		"name": "Rahul",
+		"pin": "4444",
+		"balance": 5000,
+		"history": []
+	}
+]
