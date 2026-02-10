@@ -16,7 +16,9 @@ const MoviePage = () => {
 				vip: { name: "VIP", price: 400, rows: [7] },
 			}}
 			bookedSeats={[]}
-			onBookingComplete={(booking) => console.log(booking)}
+			onBookingComplete={(booking) => {
+				console.log(booking);
+			}}
 		/>
 	);
 };
