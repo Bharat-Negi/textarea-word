@@ -1,13 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 
-// 🔴 Simulate backend booked seats (other users)
+//  🔴 Simulate backend API call for seats booked by other users
 const fetchBookedSeatsFromServer = async () => {
+	// Simulate network delay
 	await new Promise((res) => setTimeout(res, 500));
-
-	// Seats booked by OTHER users
+	// Seats booked by OTHER users (mock data)
 	return [];
 };
 
+// 🎬 Main Cinema Seat Booking Component
 const CinemaSeatBooking = ({
 	layout = {},
 	seatTypes = {},
@@ -17,38 +18,64 @@ const CinemaSeatBooking = ({
 	title = "Cinema Hall Booking",
 	subtitle = "Select your preferred seats",
 }) => {
-	const colors = [
-		"blue",
-		"purple",
-		"yellow",
-		"green",
-		"red",
-		"indigo",
-		"pink",
-		"gray",
-	];
+	// 🎨 Color palette memoized to avoid re-creation
+	const colors = useMemo(
+		() => [
+			"blue",
+			"purple",
+			"yellow",
+			"green",
+			"red",
+			"indigo",
+			"pink",
+			"gray",
+		],
+		[],
+	);
 
-	const getSeatType = (row) => {
-		const seatTypeEntries = Object.entries(seatTypes);
-
-		for (let i = 0; i < seatTypeEntries.length; i++) {
-			const [type, config] = seatTypeEntries[i];
-
-			if (config.rows.includes(row)) {
-				const color = colors[i % colors.length];
-				return { type, color, ...config };
+	// 🎟️ Determine seat type based on row number
+	const getSeatType = useCallback(
+		(row) => {
+			const entries = Object.entries(seatTypes || {});
+			// Default seat type if none provided
+			if (entries.length === 0) {
+				return { type: "regular", price: 150, color: "blue", name: "Regular" };
 			}
-		}
 
-		const [firstType, firstConfig] = seatTypeEntries[0];
-		return { type: firstType, color: colors[0], ...firstConfig };
-	};
+			// Match seat type by row
+			for (let i = 0; i < entries.length; i++) {
+				const [type, config] = entries[i];
 
+				if (Array.isArray(config?.rows) && config.rows.includes(row)) {
+					return {
+						type,
+						color: colors[i % colors.length],
+						...config,
+					};
+				}
+			}
+
+			// Fallback to first seat type
+			const [firstType, firstConfig] = entries[0];
+			return {
+				type: firstType,
+				color: colors[0],
+				...firstConfig,
+			};
+		},
+		[seatTypes, colors],
+	);
+
+	// 🪑 Initialize seat layout (memoized)
 	const initializeSeats = useMemo(() => {
+		if (!layout?.rows || !layout?.seatsPerRow) return [];
+
 		const seats = [];
+
 		for (let row = 0; row < layout.rows; row++) {
 			const seatRow = [];
 			const seatTypeInfo = getSeatType(row);
+
 			for (let seat = 0; seat < layout.seatsPerRow; seat++) {
 				const seatId = `${String.fromCharCode(65 + row)}${seat + 1}`;
 
@@ -56,21 +83,24 @@ const CinemaSeatBooking = ({
 					id: seatId,
 					row,
 					seat,
-					type: seatTypeInfo?.type || "regular",
-					price: seatTypeInfo?.price || 150,
-					color: seatTypeInfo?.color || "blue",
+					type: seatTypeInfo.type,
+					price: seatTypeInfo.price ?? 150,
+					color: seatTypeInfo.color ?? "blue",
 					status: bookedSeats.includes(seatId) ? "booked" : "available",
 					selected: false,
 				});
 			}
 			seats.push(seatRow);
 		}
-		return seats;
-	}, [layout, seatTypes, bookedSeats]);
 
+		return seats;
+	}, [layout, bookedSeats, getSeatType]);
+
+	// 🧠 Component State
 	const [seats, setSeats] = useState(initializeSeats);
 	const [selectedSeats, setSelectedSeats] = useState([]);
 
+	// 🎨 Get Tailwind classes based on seat color
 	const getColorClass = (colorName) => {
 		const colorMap = {
 			blue: "bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200",
@@ -88,29 +118,33 @@ const CinemaSeatBooking = ({
 		return colorMap[colorName] || colorMap.blue;
 	};
 
+	// 🪑 Seat UI class generator
 	const getSeatClassName = (seat) => {
 		const baseClass =
 			"w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 m-1 rounded-t-lg border-2 cursor-pointer transition-all duration-200 flex items-center justify-center text-xs sm:text-sm font-bold border-blue-300 text-blue-800 bg-blue-100";
 
+		// Booked / unavailable seat
 		if (seat.status === "booked" || seat.price === 0) {
 			return `${baseClass} bg-gray-400 border-gray-500 text-gray-600 !cursor-not-allowed`;
 		}
-
+		// Selected seat
 		if (seat.selected) {
 			return `${baseClass} bg-green-400 border-green-500 text-white transform scale-110`;
 		}
 
-		// base class
+		// Available seat
 		return `${baseClass} ${getColorClass(seat.color)}`;
 	};
 
+	// 🖱️ Handle seat selection
 	const handleSeatClick = (rowIndex, seatIndex) => {
 		const seat = seats[rowIndex][seatIndex];
 
+		// Prevent interaction with booked seats
 		if (seat.status === "booked" || seat.price === 0) return;
-
 		const isCurrentlySelected = seat.selected;
 
+		// Toggle seat selected state
 		setSeats((prevSeats) =>
 			prevSeats.map((row, rIdx) =>
 				row.map((s, sIdx) =>
@@ -121,6 +155,7 @@ const CinemaSeatBooking = ({
 			),
 		);
 
+		// Update selected seats list
 		if (isCurrentlySelected) {
 			setSelectedSeats((prev) => prev.filter((s) => s.id !== seat.id));
 		} else {
@@ -128,6 +163,7 @@ const CinemaSeatBooking = ({
 		}
 	};
 
+	// 🪑 Render seat sections (left/right of aisle)
 	const renderSeatSection = (seatRow, startIndex, endIndex) => {
 		return (
 			<div className="flex">
@@ -147,6 +183,7 @@ const CinemaSeatBooking = ({
 		);
 	};
 
+	// 🎫 Unique seat types for legend
 	const uniqueSeatTypes = Object.entries(seatTypes).map(
 		([type, config], index) => {
 			return {
@@ -157,16 +194,18 @@ const CinemaSeatBooking = ({
 		},
 	);
 
-	// total price of booking
+	// 💰 Calculate total price
 	const getTotalPrice = () => {
 		return selectedSeats.reduce((total, seat) => total + (seat.price || 0), 0);
 	};
 
+	//  ✅ Final booking handler
 	const handleBooking = () => {
 		if (selectedSeats.length === 0) {
 			alert("Please select at least one seat");
 			return;
 		}
+		// Mark selected seats as booked
 		setSeats((prevSeats) => {
 			return prevSeats.map((row) =>
 				row.map((seat) => {
@@ -178,7 +217,7 @@ const CinemaSeatBooking = ({
 			);
 		});
 
-		// Call Callback
+		// Callback to parent
 		onBookingComplete({
 			seats: selectedSeats,
 			totalPrice: getTotalPrice(),
@@ -190,11 +229,11 @@ const CinemaSeatBooking = ({
 			`Successfully booked ${selectedSeats.length} seat(s) for ${currency}${getTotalPrice()}`,
 		);
 
-		// ✅ ADD THESE TWO LINES
+		// Reset selection
 		setSelectedSeats([]);
 	};
 
-	// 🔥 Sync seats booked by other users
+	// 🔄 Poll server for seats booked by other users
 	useEffect(() => {
 		const interval = setInterval(async () => {
 			const serverBookedSeats = await fetchBookedSeatsFromServer();
@@ -219,12 +258,14 @@ const CinemaSeatBooking = ({
 		return () => clearInterval(interval);
 	}, []);
 
+	// 🎬 Reset seats for a new show
 	const startNewShow = () => {
 		setSeats(initializeSeats);
 		setSelectedSeats([]);
 		alert("🎬 New show started");
 	};
 
+	/* ========================= JSX ============================== */
 	return (
 		<div className="w-full min-h-screen bg-gray-50 p-4">
 			{/* Title */}
