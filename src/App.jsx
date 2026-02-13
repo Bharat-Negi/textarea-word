@@ -17,6 +17,7 @@ import BreadCurmPageTwo from "./component/other-com/breadcrumb/BreadCurmPageTwo"
 import BreadCrum from "./component/other-com/breadcrumb/BreadCrum";
 import WeatherApp from "./component/other-com/weather-page/WeatherApp";
 import AtmPage from "./pages/atm-page";
+import MultipleApiCall from "./component/multiple-api/MultipleApiCall";
 
 function App() {
 	return (
@@ -40,6 +41,7 @@ function App() {
 					<Route path="/breadcrumb/:id" element={<BreadCurmPageTwo />} />
 					<Route path="/weather-page" element={<WeatherApp />} />
 					<Route path="/atm-page" element={<AtmPage />} />
+					<Route path="/multiple-api" element={<MultipleApiCall />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
 			</div>
