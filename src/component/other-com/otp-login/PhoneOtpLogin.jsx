@@ -33,19 +33,22 @@ export const PhoneOtpLogin = () => {
 	return (
 		<>
 			{!showOtpInput ? (
-				<form
-					onSubmit={handlePhoneSubmit}
-					className="flex justify-center gap-3"
-				>
-					<input
-						type="text"
-						value={phoneNumber}
-						className="border px-3 py-2"
-						placeholder="Enter Phone Number"
-						onChange={(e) => setPhoneNumber(e.target.value)}
-					/>
-					<button className="btn">Submit</button>
-				</form>
+				<>
+					<form
+						onSubmit={handlePhoneSubmit}
+						className="flex justify-center gap-3"
+					>
+						<input
+							type="text"
+							value={phoneNumber}
+							className="border px-3 py-2 min-w-75"
+							placeholder="Enter Phone Number 10 digit"
+							onChange={(e) => setPhoneNumber(e.target.value)}
+						/>
+						<button className="btn">Submit</button>
+					</form>
+					Phone number: {phoneNumber.length}
+				</>
 			) : (
 				<div className="flex flex-col items-center gap-3">
 					<h3>Send OTP on mobile {phoneNumber}</h3>

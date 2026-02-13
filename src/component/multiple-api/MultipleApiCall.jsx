@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const MultipleApiCall = () => {
+	let proLimit = 5;
 	const [data1, setData1] = useState([]);
 	const [data2, setData2] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -15,12 +16,12 @@ const MultipleApiCall = () => {
 			try {
 				// Option 2: Using Promise.all (cleaner modern approach)
 				const [usersResponse, commentsResponse] = await Promise.all([
-					axios.get("https://jsonplaceholder.typicode.com/users"),
-					axios.get("https://dummyjson.com/comments"),
+					axios.get(`https://dummyjson.com/users/?limit=${proLimit}`),
+					axios.get(`https://dummyjson.com/comments/?limit=${proLimit}`),
 				]);
 
-				setData1(usersResponse.data);
-				setData2(commentsResponse.data);
+				setData1(usersResponse.data.users);
+				setData2(commentsResponse.data.comments || []);
 			} catch (err) {
 				console.error("Failed to fetch data:", err);
 				setError(true);
@@ -47,7 +48,7 @@ const MultipleApiCall = () => {
 				<ul>
 					{data1.map((user) => (
 						<li key={`users-${user.id}`}>
-							<strong>{user.name} </strong> - {user.email}
+							<strong>{user.firstName} </strong> - {user.role}
 						</li>
 					))}
 				</ul>
@@ -55,11 +56,13 @@ const MultipleApiCall = () => {
 			<br />
 			<hr />
 			<br />
-			<section>
-				<h2>Comments ({data2.comments?.length || 0})</h2>
+			<section className="mb-5">
+				<h2>Comments ({data2.length})</h2>
 				<ul>
-					{data2.comments?.map((comment) => (
-						<li key={`comment-${comment.id}`}>{comment.body}</li>
+					{data2?.map((comment) => (
+						<li key={`comment-${comment.id}`}>
+							{comment.user.fullName} - {comment.body}
+						</li>
 					))}
 				</ul>
 			</section>
