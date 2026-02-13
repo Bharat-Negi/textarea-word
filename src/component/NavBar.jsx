@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import NavLink from "../../public/json/nav-data.json";
 

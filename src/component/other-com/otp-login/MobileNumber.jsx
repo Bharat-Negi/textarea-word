@@ -1,4 +1,3 @@
-import React from "react";
 import { PhoneOtpLogin } from "./PhoneOtpLogin";
 
 const MobileNumber = () => {

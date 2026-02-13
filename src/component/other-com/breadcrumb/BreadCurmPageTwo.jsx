@@ -7,19 +7,22 @@ const BreadCurmPageTwo = () => {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		setLoading(true);
-
-		fetch(`https://dummyjson.com/products/${id}`)
-			.then((res) => res.json())
-			.then((res) => {
-				setProduct(res);
-			})
-			.catch((err) => {
-				console.error(err);
-			})
-			.finally(() => {
+		const productData = () => {
+			try {
+				setLoading(true);
+				fetch(`https://dummyjson.com/products/${id}`)
+					.then((res) => res.json())
+					.then((res) => {
+						setProduct(res);
+					});
+			} catch (error) {
+				console.error(error);
+			} finally {
 				setLoading(false); // ✅ correct place
-			});
+			}
+		};
+
+		productData();
 	}, [id]);
 
 	return (
