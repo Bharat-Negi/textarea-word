@@ -5,6 +5,7 @@ const MultipleApiCall = () => {
 	let proLimit = 5;
 	const [data1, setData1] = useState([]);
 	const [data2, setData2] = useState([]);
+	const [data3, setData3] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 
@@ -15,13 +16,16 @@ const MultipleApiCall = () => {
 
 			try {
 				// Option 2: Using Promise.all (cleaner modern approach)
-				const [usersResponse, commentsResponse] = await Promise.all([
-					axios.get(`https://dummyjson.com/users/?limit=${proLimit}`),
-					axios.get(`https://dummyjson.com/comments/?limit=${proLimit}`),
-				]);
+				const [usersResponse, commentsResponse, otherUserResponse] =
+					await Promise.all([
+						axios.get(`https://dummyjson.com/users/?limit=${proLimit}`),
+						axios.get(`https://dummyjson.com/comments/?limit=${proLimit}`),
+						axios.get(`https://dummyjson.com/users/?limit=${proLimit}`),
+					]);
 
 				setData1(usersResponse.data.users);
 				setData2(commentsResponse.data.comments || []);
+				setData3(otherUserResponse.data.users);
 			} catch (err) {
 				console.error("Failed to fetch data:", err);
 				setError(true);
@@ -32,6 +36,8 @@ const MultipleApiCall = () => {
 
 		fetchAllData();
 	}, []);
+
+	console.log(data3);
 
 	// Handle loading state
 	if (loading) return <div>Loading data...</div>;
@@ -53,10 +59,8 @@ const MultipleApiCall = () => {
 					))}
 				</ul>
 			</section>
-			<br />
-			<hr />
-			<br />
-			<section className="mb-5">
+			<hr className="my-2" />
+			<section>
 				<h2>Comments ({data2.length})</h2>
 				<ul>
 					{data2?.map((comment) => (
@@ -66,6 +70,18 @@ const MultipleApiCall = () => {
 					))}
 				</ul>
 			</section>
+			<hr className="my-2" />
+			<section>
+				<h2>Comments ({data3.length})</h2>
+				<ul>
+					{data3?.map((userTwo) => (
+						<li key={`userTwo-${userTwo.id}`}>
+							<strong>{userTwo.company.name} </strong> - {userTwo.eyeColor}
+						</li>
+					))}
+				</ul>
+			</section>
+			<div className="mb-5"></div>
 		</div>
 	);
 };

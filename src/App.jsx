@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import Home from "./pages/home";
 import CustomHooks from "./component/Hooks/CustomHooks";
 import UseStateHook from "./component/Hooks/UseStateHook";
@@ -15,8 +16,6 @@ import MoviePage from "./component/other-com/movie-ticket/MoviePage";
 import BreadcrumbPage from "./component/other-com/breadcrumb/BreadcrumbPage";
 import BreadCurmPageTwo from "./component/other-com/breadcrumb/BreadCurmPageTwo";
 import BreadCrum from "./component/other-com/breadcrumb/BreadCrum";
-
-import { lazy, Suspense } from "react";
 
 const MultipleApiCall = lazy(
 	() => import("./component/multiple-api/MultipleApiCall"),
