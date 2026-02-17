@@ -16,6 +16,7 @@ import MoviePage from "./component/other-com/movie-ticket/MoviePage";
 import BreadcrumbPage from "./component/other-com/breadcrumb/BreadcrumbPage";
 import BreadCurmPageTwo from "./component/other-com/breadcrumb/BreadCurmPageTwo";
 import BreadCrum from "./component/other-com/breadcrumb/BreadCrum";
+import MultipleInputPage from "./pages/multiple-input-page";
 
 const MultipleApiCall = lazy(
 	() => import("./component/multiple-api/MultipleApiCall"),
@@ -49,6 +50,10 @@ function App() {
 						<Route path="/weather-page" element={<WeatherApp />} />
 						<Route path="/atm-page" element={<AtmPage />} />
 						<Route path="/multiple-api" element={<MultipleApiCall />} />
+						<Route
+							path="/multiple-input-page"
+							element={<MultipleInputPage />}
+						/>
 						<Route path="*" element={<PageNotFound />} />
 					</Routes>
 				</Suspense>
