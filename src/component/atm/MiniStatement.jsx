@@ -60,7 +60,7 @@ const MiniStatement = () => {
 	return (
 		<button
 			onClick={download}
-			className={`w-full bg-linear-to-r from-indigo-600 to-purple-600 p-3 mt-3 rounded font-medium ${
+			className={`w-full bg-linear-to-r from-indigo-600 to-purple-600 p-3 mt-3 rounded font-medium text-white ${
 				isDisabled
 					? "opacity-50 cursor-not-allowed"
 					: "hover:from-indigo-700 hover:to-purple-700"

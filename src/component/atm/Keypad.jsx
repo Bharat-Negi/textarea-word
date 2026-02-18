@@ -15,13 +15,13 @@ const Keypad = ({ onPress, onClear, onEnter }) => {
 
 			<button
 				onClick={onClear}
-				className="bg-yellow-600 p-3 rounded col-span-2 active:scale-95"
+				className="bg-yellow-600 text-white p-3 rounded col-span-2 active:scale-95"
 			>
 				CLEAR
 			</button>
 			<button
 				onClick={onEnter}
-				className="bg-green-600 p-3 rounded col-span-3 active:scale-95"
+				className="bg-green-600 text-white p-3 rounded col-span-3 active:scale-95"
 			>
 				ENTER
 			</button>

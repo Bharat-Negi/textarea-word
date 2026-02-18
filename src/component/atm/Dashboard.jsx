@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import { deposit, withdraw, logout } from "../../redux/features/atmSlice";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import { deposit, withdraw, logout } from "../../redux/features/atmSlice";
 import History from "./History";
 import ChangePin from "./ChangePin";
 import MiniStatement from "./MiniStatement";
-import { ToastContainer } from "react-toastify";
 
 const Dashboard = () => {
 	const { currentUser } = useSelector((state) => state.atm);
@@ -30,13 +30,13 @@ const Dashboard = () => {
 					<div className="flex gap-5">
 						<button
 							onClick={() => dispatch(deposit(Number(amount)))}
-							className="w-full bg-blue-600 p-2 mb-2 rounded"
+							className="w-full bg-blue-600 text-white p-2 mb-2 rounded"
 						>
 							Deposit
 						</button>
 						<button
 							onClick={() => dispatch(withdraw(Number(amount)))}
-							className="w-full bg-yellow-600 p-2 mb-2 rounded"
+							className="w-full bg-yellow-600 text-white p-2 mb-2 rounded"
 						>
 							Withdraw
 						</button>

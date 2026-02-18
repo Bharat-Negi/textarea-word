@@ -1,9 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
-import NavLink from "../../public/json/nav-data.json";
+import { NavLink } from "react-router-dom";
+import NavLinkData from "../../public/json/nav-data.json";
 
 const NavBar = () => {
-	const location = useLocation();
-
 	return (
 		<>
 			<nav className="relative bg-gray-800 dark:bg-gray-800/50 dark:after:pointer-events-none dark:after:absolute dark:after:inset-x-0 dark:after:bottom-0 dark:after:h-px dark:after:bg-white/10">
@@ -94,19 +92,20 @@ const NavBar = () => {
 						<div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 							<div className="hidden sm:block">
 								<div className="flex space-x-4 flex-wrap">
-									{NavLink?.map((data) => {
+									{NavLinkData?.map((data) => {
 										return (
-											<Link
+											<NavLink
 												key={data.id}
 												to={data.link}
-												className={
-													location.pathname === data.link
+												className={({ isActive }) =>
+													isActive
 														? "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white dark:bg-gray-950/50 mb-2"
 														: "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white mb-2"
 												}
+												end={data.link === "/"} // only exact match for home
 											>
 												{data.text}
-											</Link>
+											</NavLink>
 										);
 									})}
 								</div>
